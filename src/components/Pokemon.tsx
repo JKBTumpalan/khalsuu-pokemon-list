@@ -22,7 +22,7 @@ export const Pokemon = ({ data }: any) => {
           weight: data.weight,
         });
       });
-  }, []);
+  }, [pokemonData]);
 
   return (
     <div className={`card-container`}>

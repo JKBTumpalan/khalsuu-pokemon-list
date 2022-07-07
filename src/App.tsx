@@ -15,7 +15,7 @@ function App() {
   const [filteredPokemonList, setFilteredPokemonList] = useState(pokemonList);
 
   useEffect(() => {
-    fetch(`https://pokeapi.co/api/v2/pokemon/?limit=70`)
+    fetch(`https://pokeapi.co/api/v2/pokemon/?limit=150`)
       .then((response) => response.json())
       .then((json) => {
         setPokemonList(json.results);
@@ -27,6 +27,7 @@ function App() {
       return pokemon.name.toLocaleLowerCase().includes(pokemonSearchField);
     });
 
+    console.log(newFilteredPokemons);
     setFilteredPokemonList(newFilteredPokemons);
   }, [pokemonList, pokemonSearchField]);
 
@@ -37,7 +38,7 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
+      <Header className="app-title" />
       <PokemonSearch
         className="pokemon-search-box"
         placeholder="Find Khalsuu's Pokemon"
