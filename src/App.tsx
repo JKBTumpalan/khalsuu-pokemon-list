@@ -1,24 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import { Header } from "./components/Header";
+import { PokemonCardList } from "./components/PokemonCardList";
+import { PokemonSearch } from "./components/PokemonSearch";
+
+interface Pokemon {
+  name: string;
+  url: string;
+}
 
 function App() {
+  const [pokemonSearchField, setPokemonSearchField] = useState<string>("");
+  const [pokemonList, setPokemonList] = useState([]);
+  const [filteredPokemonList, setFilteredPokemonList] = useState(pokemonList);
+
+  useEffect(() => {
+    fetch(`https://pokeapi.co/api/v2/pokemon/?limit=70`)
+      .then((response) => response.json())
+      .then((json) => {
+        setPokemonList(json.results);
+      });
+  }, []);
+
+  useEffect(() => {
+    const newFilteredPokemons = pokemonList.filter((pokemon: Pokemon) => {
+      return pokemon.name.toLocaleLowerCase().includes(pokemonSearchField);
+    });
+
+    setFilteredPokemonList(newFilteredPokemons);
+  }, [pokemonList, pokemonSearchField]);
+
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setPokemonSearchField(e.target.value.toLocaleLowerCase());
+    console.log(pokemonSearchField);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <PokemonSearch
+        className="pokemon-search-box"
+        placeholder="Find Khalsuu's Pokemon"
+        onChangeHandler={onSearchChange}
+      />
+      <PokemonCardList pokemons={filteredPokemonList} />
     </div>
   );
 }
